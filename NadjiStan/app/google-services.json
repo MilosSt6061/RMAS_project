@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "798354570717",
+    "project_id": "nadjistan-e0319",
+    "storage_bucket": "nadjistan-e0319.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798354570717:android:8e1bff57b7953268764a34",
+        "android_client_info": {
+          "package_name": "com.example.nadjistan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCD1ZLPOdkUEOYVDVYF9gH_vJiocfBihIs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
