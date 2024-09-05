@@ -230,22 +230,24 @@ class AuthRepository() {
     }
 
     fun GetData( set : (String,String,String,String,String,String) -> Unit ){
-        var User : ClientData?
-        db.collection("ClientData").document(auth.currentUser!!.uid).get().addOnSuccessListener {
-            User = it.toObject<ClientData>()
-            set(
-                User!!.ime,
-                User!!.prezime,
-                User!!.brojTelefona,
-                auth.currentUser!!.email!!,
-                auth.currentUser!!.displayName!!,
-                if(auth.currentUser!!.photoUrl != null)
-                auth.currentUser!!.photoUrl.toString()
-                else
-                ""
-            )
+        if(auth.currentUser != null) {
+            var User: ClientData?
+            db.collection("ClientData").document(auth.currentUser!!.uid).get()
+                .addOnSuccessListener {
+                    User = it.toObject<ClientData>()
+                    set(
+                        User!!.ime,
+                        User!!.prezime,
+                        User!!.brojTelefona,
+                        auth.currentUser!!.email!!,
+                        auth.currentUser!!.displayName!!,
+                        if (auth.currentUser!!.photoUrl != null)
+                            auth.currentUser!!.photoUrl.toString()
+                        else
+                            ""
+                    )
+                }
         }
-
     }
 
 
@@ -283,17 +285,19 @@ class AuthRepository() {
     }
 
     fun GetRankedList(context: Context, set: (List<ClientData>) -> Unit){
-        try{
-            db.collection("ClientData").orderBy("rank",Query.Direction.DESCENDING).get()
-                .addOnSuccessListener {
-                    set(it.toObjects<ClientData>())
-                }
-                .addOnFailureListener{
-                    Toast.makeText(context,"Greska pri prijemu podataka",Toast.LENGTH_SHORT).show()
-                }
-        }
-        catch (ex : Exception){
-            Toast.makeText(context,"Greska pri prijemu podataka",Toast.LENGTH_SHORT).show()
+        if(auth.currentUser != null) {
+            try {
+                db.collection("ClientData").orderBy("rank", Query.Direction.DESCENDING).get()
+                    .addOnSuccessListener {
+                        set(it.toObjects<ClientData>())
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(context, "Greska pri prijemu podataka", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+            } catch (ex: Exception) {
+                Toast.makeText(context, "Greska pri prijemu podataka", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

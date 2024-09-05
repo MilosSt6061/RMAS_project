@@ -59,12 +59,14 @@ class PonudeRepository() {
     }
 
     fun GetPonude() {
-        Log.d("PonudeRepository:", "Getting data")
-        val res = db.collection("Ponude").orderBy("id", Query.Direction.DESCENDING).get()
-            .addOnSuccessListener {
-                ponude.value = it.toObjects<Ponude>()
-                ex()
-            }
+        if (auth.currentUser != null) {
+            Log.d("PonudeRepository:", "Getting data")
+            val res = db.collection("Ponude").orderBy("id", Query.Direction.DESCENDING).get()
+                .addOnSuccessListener {
+                    ponude.value = it.toObjects<Ponude>()
+                    ex()
+                }
+        }
     }
 
     fun getId(): String {
@@ -72,30 +74,32 @@ class PonudeRepository() {
     }
 
     fun updateLocationData(x: Double, y: Double) {
-        var Position: ClientPosition?
-        db.collection("ClientPosition").document(auth.currentUser!!.uid).get()
-            .addOnSuccessListener {
-                Position = it.toObject<ClientPosition>()
-                Log.d("PonudeRepository:", "New location $x : $y")
-                if (Position != null) {
-                    Position!!.latitude = x
-                    Position!!.longitude = y
+        if(auth.currentUser != null) {
+            var Position: ClientPosition?
+            db.collection("ClientPosition").document(auth.currentUser!!.uid).get()
+                .addOnSuccessListener {
+                    Position = it.toObject<ClientPosition>()
+                    Log.d("PonudeRepository:", "New location $x : $y")
+                    if (Position != null) {
+                        Position!!.latitude = x
+                        Position!!.longitude = y
 
-                    db.collection("ClientPosition").document(auth.currentUser!!.uid)
-                        .set(Position!!)
-                        .addOnSuccessListener {
-                            Log.d("AuthRepository:", "DocumentSnapshot successfully edited!")
-                        }
-                        .addOnFailureListener { e ->
-                            Log.w("AuthRepository:", "Error editing document", e)
-                            setError("Greska pri upisu podataka")
-                        }
+                        db.collection("ClientPosition").document(auth.currentUser!!.uid)
+                            .set(Position!!)
+                            .addOnSuccessListener {
+                                Log.d("AuthRepository:", "DocumentSnapshot successfully edited!")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.w("AuthRepository:", "Error editing document", e)
+                                setError("Greska pri upisu podataka")
+                            }
+                    }
                 }
-            }
-            .addOnFailureListener {
-                Log.d("AuthRepository", "Greska pri preuzimanju podataka")
-                setError("Greska pri preuzimanju podataka")
-            }
+                .addOnFailureListener {
+                    Log.d("AuthRepository", "Greska pri preuzimanju podataka")
+                    setError("Greska pri preuzimanju podataka")
+                }
+        }
     }
 
     fun getRank(): Int {
@@ -109,11 +113,13 @@ class PonudeRepository() {
     }
 
     fun GetUserData( set : (ClientData , String) -> Unit){
-        Log.d("PonudeRepository:", "Getting data")
-        val res = db.collection("ClientData").document(auth.currentUser!!.uid).get()
-            .addOnSuccessListener {
-                set(it.toObject<ClientData>()!!,auth.currentUser!!.email?:"")
-            }
+        if(auth.currentUser != null) {
+            Log.d("PonudeRepository:", "Getting data")
+            val res = db.collection("ClientData").document(auth.currentUser!!.uid).get()
+                .addOnSuccessListener {
+                    set(it.toObject<ClientData>()!!, auth.currentUser!!.email ?: "")
+                }
+        }
     }
 
     fun DeletePonuda(id: Int) {
